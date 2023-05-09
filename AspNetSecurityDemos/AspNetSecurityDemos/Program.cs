@@ -1,4 +1,5 @@
 using AspNetSecurityDemos.Demos;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
@@ -33,8 +34,14 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<TicketDatabase>(); // can be scoped if it's an actual db connection
 builder.Services.AddSingleton<ITicketStore, CustomTicketStore>(); // must be singleton, because it is resolved for the authorization middleware
 
+builder.Services.AddSingleton<CookieAuthenticationEvents, CustomAuthenticationEvents>(); //must be singleton, because it is resolved for the authentication middleware
+
 builder.Services.AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
-                .Configure<ITicketStore>((options, store) => options.SessionStore = store);
+                .Configure<ITicketStore>((options, store) => options.SessionStore = store)
+                .Configure<CookieAuthenticationEvents>((options, events) => options.Events = events);
+
+
+builder.Services.AddSingleton<IAntiforgeryAdditionalDataProvider, ExpiringAntiforgeryAddtionalDataProvider>();
 
 var app = builder.Build();
 

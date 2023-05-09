@@ -97,5 +97,17 @@ namespace AspNetSecurityDemos.Controllers
             }
             return RedirectToAction(nameof(Logins));
         }
+
+        [Authorize]
+        public async Task<IActionResult> CreateItem()
+        {
+            return View();
+        }
+
+        [HttpPost, Authorize, ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateItem(Item input)
+        {
+            return View();
+        }
     }
 }
