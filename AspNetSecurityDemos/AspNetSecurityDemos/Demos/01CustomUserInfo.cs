@@ -7,6 +7,9 @@ namespace AspNetSecurityDemos.Demos;
 public class ApplicationUser : IdentityUser
 {
     public DateTime DateOfBirth { get; set; }
+
+    [PersonalData,ProtectedPersonalData]
+    public string Address { get; set; }
 }
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

@@ -49,14 +49,16 @@ namespace AspNetSecurityDemos.Controllers
                 Email = "test@test.hu",
                 UserName = "test@test.hu",
                 EmailConfirmed = true,
-                DateOfBirth = new DateTime(1980, 1, 1)
+                DateOfBirth = new DateTime(1980, 1, 1),
+                Address = "Some sensitive address information"
             }, "a");
             await userManager.CreateAsync(new ApplicationUser
             {
                 Email = "test2@test.hu",
                 UserName = "test2@test.hu",
                 EmailConfirmed = true,
-                DateOfBirth = new DateTime(2020, 1, 1)
+                DateOfBirth = new DateTime(2020, 1, 1),
+                Address = "Some other sensitive address information"
             }, "a");
             return View("Index");
         }
