@@ -1,5 +1,6 @@
 ﻿using AspNetSecurityDemos.Demos;
 using AspNetSecurityDemos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -64,6 +65,13 @@ namespace AspNetSecurityDemos.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        [MinimumAge(18)]
+        public IActionResult DrinkBeer()
+        {
+            return View("Index");
         }
     }
 }

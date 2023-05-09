@@ -1,4 +1,6 @@
 using AspNetSecurityDemos.Demos;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(opts => opts.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=IdentityDemo;Integrated Security=true"));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddClaimsPrincipalFactory<CustomClaimFactory>();
+
+
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, MinimumAgePolicyProvider>();
+builder.Services.AddSingleton<IAuthorizationHandler, MinimumAgeHandler>();
 
 builder.Services.Configure<IdentityOptions>(opt =>
 {
@@ -26,7 +33,6 @@ var app = builder.Build();
 app.UseHttpsRedirection().UseStaticFiles().UseRouting();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
