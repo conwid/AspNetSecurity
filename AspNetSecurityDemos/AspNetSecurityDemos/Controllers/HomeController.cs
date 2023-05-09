@@ -1,4 +1,5 @@
-﻿using AspNetSecurityDemos.Models;
+﻿using AspNetSecurityDemos.Demos;
+using AspNetSecurityDemos.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,13 @@ namespace AspNetSecurityDemos.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IdentityDbContext context;
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly ApplicationDbContext context;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public HomeController(IdentityDbContext context, 
-                              UserManager<IdentityUser> userManager, 
-                              SignInManager<IdentityUser> signInManager)
+        public HomeController(ApplicationDbContext context,
+                              UserManager<ApplicationUser> userManager,
+                              SignInManager<ApplicationUser> signInManager)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -42,8 +43,20 @@ namespace AspNetSecurityDemos.Controllers
         {
             await context.Database.EnsureDeletedAsync();
             await context.Database.EnsureCreatedAsync();
-            await userManager.CreateAsync(new() { Email = "test@test.hu", UserName = "test@test.hu", EmailConfirmed = true }, "a");
-            await userManager.CreateAsync(new() { Email = "test2@test.hu", UserName = "test2@test.hu", EmailConfirmed = true }, "a");
+            await userManager.CreateAsync(new ApplicationUser
+            {
+                Email = "test@test.hu",
+                UserName = "test@test.hu",
+                EmailConfirmed = true,
+                DateOfBirth = new DateTime(1980, 1, 1)
+            }, "a");
+            await userManager.CreateAsync(new ApplicationUser
+            {
+                Email = "test2@test.hu",
+                UserName = "test2@test.hu",
+                EmailConfirmed = true,
+                DateOfBirth = new DateTime(2020, 1, 1)
+            }, "a");
             return View("Index");
         }
 
