@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace AspNetSecurityDemos.Controllers
 {
@@ -13,14 +14,17 @@ namespace AspNetSecurityDemos.Controllers
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly TicketDatabase ticketDatabase;
 
         public HomeController(ApplicationDbContext context,
                               UserManager<ApplicationUser> userManager,
-                              SignInManager<ApplicationUser> signInManager)
+                              SignInManager<ApplicationUser> signInManager,
+                              TicketDatabase ticketDatabase)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+            this.ticketDatabase = ticketDatabase ?? throw new ArgumentNullException(nameof(ticketDatabase));
         }
 
 
@@ -74,6 +78,24 @@ namespace AspNetSecurityDemos.Controllers
         public IActionResult DrinkBeer()
         {
             return View("Index");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logins()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(ticketDatabase.ticketStore.ToList());
+        }
+
+        [Authorize]
+        public async Task<IActionResult> DeleteLogin(Guid loginId)
+        {
+            var ticket = ticketDatabase.ticketStore.SingleOrDefault(t => t.Id == loginId);
+            if (ticket != null)
+            {
+                ticketDatabase.ticketStore.Remove(ticket);
+            }
+            return RedirectToAction(nameof(Logins));
         }
     }
 }

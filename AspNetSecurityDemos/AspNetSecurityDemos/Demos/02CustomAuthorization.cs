@@ -49,7 +49,7 @@ public class MinimumAgeHandler : IAuthorizationHandler
     protected async Task HandleMinimumAgeRequirement(AuthorizationHandlerContext context, MinimumAgeRequirement requirement)
     {
         var ageClaim = context.User.Claims.SingleOrDefault(c => c.Type == "http://schemas.techeddemo.com/2023/05/identity/dateofbirth");
-        if (DateTime.Now.Subtract(DateTime.Parse(ageClaim.Value)) > TimeSpan.FromDays(requirement.MinimumAge * 365))
+        if (ageClaim!=null && DateTime.Now.Subtract(DateTime.Parse(ageClaim.Value)) > TimeSpan.FromDays(requirement.MinimumAge * 365))
             context.Succeed(requirement);
     }
 }

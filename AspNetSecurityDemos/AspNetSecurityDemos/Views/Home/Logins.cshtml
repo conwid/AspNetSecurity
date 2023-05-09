@@ -1,0 +1,21 @@
+﻿@using AspNetSecurityDemos.Demos;
+@model IEnumerable<AuthenticationEvent>
+
+<table class="table table-dark">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Expires)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastActivity)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete","DeleteLogin", new {loginId=item.Id});
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

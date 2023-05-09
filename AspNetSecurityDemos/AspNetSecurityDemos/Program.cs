@@ -29,7 +29,12 @@ builder.Services.Configure<IdentityOptions>(opt =>
     opt.Password.RequiredLength = 1;
 });
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<TicketDatabase>(); // can be scoped if it's an actual db connection
+builder.Services.AddSingleton<ITicketStore, CustomTicketStore>(); // must be singleton, because it is resolved for the authorization middleware
 
+builder.Services.AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
+                .Configure<ITicketStore>((options, store) => options.SessionStore = store);
 
 var app = builder.Build();
 
