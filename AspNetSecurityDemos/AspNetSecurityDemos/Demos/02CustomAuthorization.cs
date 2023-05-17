@@ -56,7 +56,7 @@ public class MinimumAgeHandler : IAuthorizationHandler
 
 public sealed class MinimumAgeAttribute : AuthorizeAttribute
 {
-    private static readonly string policyPrefix = "minimumAge";
+    private static readonly string policyPrefix = "minimumAge:";
     public MinimumAgeAttribute(int minimumAge)
     {
         MinimumAge = minimumAge;
@@ -70,14 +70,14 @@ public sealed class MinimumAgeAttribute : AuthorizeAttribute
 
 public class MinimumAgePolicyProvider : DefaultAuthorizationPolicyProvider
 {
-    private static readonly string policyPrefix = "minimumAge";
+    private static readonly string policyPrefix = "minimumAge:";
     public MinimumAgePolicyProvider(IOptions<AuthorizationOptions> options) : base(options) { }
     public async override Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
         if (policyName.StartsWith(policyPrefix, StringComparison.OrdinalIgnoreCase))
         {
             var minimumAge = int.Parse(policyName.Substring(policyPrefix.Length));
-            var policy = new AuthorizationPolicyBuilder(IdentityConstants.ApplicationScheme);
+            var policy = new AuthorizationPolicyBuilder();
             policy.AddRequirements(new MinimumAgeRequirement(minimumAge));
             return policy.Build();
         }

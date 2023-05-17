@@ -5,9 +5,6 @@ namespace AspNetSecurityDemos.Demos;
 
 public class CustomAuthenticationEvents : CookieAuthenticationEvents
 {
-
-    
-
     public override async Task SigningIn(CookieSigningInContext context)
     {
        await base.SigningIn(context);
